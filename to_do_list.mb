@@ -96,3 +96,10 @@
     php artisan make:migration add_columns_to_reviews_table --table=reviews
     php artisan make:migration add_columns_to_admins_table --table=admins
 9. Definizione file config movies.php e directors.php per gestione dati iniziali e compilazione tabelle tramite seeder.
+10. Creazione dei seeder per popolare le tabelle con i comandi:
+    php artisan make:seeder MoviesTableSeeder -> utilizzo file di configurazione config/movies.php
+    php artisan make:seeder DirectorsTableSeeder -> utilizzo file di configurazione config/directors.php
+    php artisan make:seeder ReviewsTableSeeder 
+    php artisan make:seeder UsersTableSeeder -> utilizzo faker
+    php artisan make:seeder AdminsTableSeeder -> utilizzo faker
+11. Dopo compilazione seeder inviare php artisan migrate:fresh --seed
