@@ -1,0 +1,98 @@
+1. Creazione progetto laravel cinemovies-project da terminale con il comando:composer create-project --prefer-dist laravel/laravel:^11.0 cinemovies-project --ignore-platform-req=ext-curl
+2. Installazione dipendenze con il comando: composer install --ignore-platform-req=ext-curl --no-security-blocking
+3. Aggiornamento file .env con le seguenti informazioni:
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=******** //modificare con nome database
+    DB_USERNAME=root
+    DB_PASSWORD=
+    DB_COLLATION=utf8mb4_unicode_ci
+
+4. Definizione delle tabelle del database per la parte di Model
+    4.1 Struttura del database:
+    DATABASE: movies
+
+    ├── directors
+    │   └── 1 ─────────── N ── movies
+    │
+    ├── movies
+    │   └── 1 ─────────── N ── reviews
+    │
+    ├── users
+    │   └── 1 ─────────── N ── reviews
+    │
+    └── admins
+
+    4.2 Definizione tabella movies:
+    | Campo          | Tipo Laravel             | Attributi          | Descrizione                     |
+    | -------------- | ------------------------ | ------------------ | ------------------------------- |
+    | `id`           | `id()`                   | PK, auto increment | Identificativo film             |
+    | `title`        | `string()`               | NOT NULL           | Titolo del film                 |
+    | `description`  | `text()`                 | NULL               | Trama/descrizione               |
+    | `release_date` | `date()`                 | NULL               | Data di uscita                  |
+    | `poster`       | `string()`               | NULL               | Percorso/URL della copertina    |
+    | `genre`        | `string()`               | NULL               | Genere del film                 |
+    | `trailer_url`  | `string()`               | NULL               | Link al trailer                 |
+    | `director_id`  | `foreignId()`            | FK, NOT NULL       | Regista del film                |
+    | `created_at`   | timestamps               |                    | Data creazione                  |
+    | `updated_at`   | timestamps               |                    | Ultima modifica                 |
+
+    4.3 Definizione tabella directors:
+    | Campo         | Tipo Laravel | Attributi          | Descrizione            |
+    | ------------- | ------------ | ------------------ | ---------------------- |
+    | `id`          | `id()`       | PK, auto increment | ID regista             |
+    | `first_name`  | `string()`   | NOT NULL           | Nome                   |
+    | `last_name`   | `string()`   | NOT NULL           | Cognome                |
+    | `birth_date`  | `date()`     | NULL               | Data di nascita        |
+    | `biography`   | `text()`     | NULL               | Biografia              |
+    | `created_at`  | timestamps   |                    | Data creazione         |
+    | `updated_at`  | timestamps   |                    | Ultima modifica        |
+
+    4.4 Definizione tabella users:
+    | Campo        | Tipo Laravel | Attributi          | Descrizione        |
+    | ------------ | ------------ | ------------------ | ------------------ |
+    | `id`         | `id()`       | PK, auto increment | ID utente          |
+    | `name`       | `string()`   | NOT NULL           | Nome utente        |
+    | `email`      | `string()`   | UNIQUE, NOT NULL   | Email              |
+    | `password`   | `string()`   | NOT NULL           | Password hashata   |
+    | `created_at` | timestamps   |                    | Data registrazione |
+    | `updated_at` | timestamps   |                    | Ultima modifica    |
+
+    4.5 Definizione tabella reviews:
+    | Campo        | Tipo Laravel            | Attributi          | Descrizione            |
+    | ------------ | ----------------------- | ------------------ | ---------------------- |
+    | `id`         | `id()`                  | PK, auto increment | ID recensione          |
+    | `movie_id`   | `foreignId()`           | FK, NOT NULL       | Film recensito         |
+    | `user_id`    | `foreignId()`           | FK, NOT NULL       | Utente che ha scritto  |
+    | `rating`     | `unsignedTinyInteger()` | NOT NULL           | Voto 1-5               |
+    | `title`      | `string()`              | NULL               | Titolo recensione      |
+    | `comment`    | `text()`                | NOT NULL           | Testo della recensione |
+    | `created_at` | timestamps              |                    | Data recensione        |
+    | `updated_at` | timestamps              |                    | Ultima modifica        |
+
+    4.6 Definizione tabella admins:
+    | Campo        | Tipo Laravel | Attributi          | Descrizione          |
+    | ------------ | ------------ | ------------------ | -------------------- |
+    | `id`         | `id()`       | PK, auto increment | ID amministratore    |
+    | `name`       | `string()`   | NOT NULL           | Nome admin           |
+    | `email`      | `string()`   | UNIQUE, NOT NULL   | Email amministratore |
+    | `password`   | `string()`   | NOT NULL           | Password hashata     |
+    | `created_at` | timestamps   |                    | Data creazione       |
+    | `updated_at` | timestamps   |                    | Ultima modifica      |
+
+5. Creazione del database in MySQL con il nome "movies" e inserimento in file env.
+6. Creazione delle migrazioni per le tabelle del database con i comandi:
+    php artisan make:model Movie -m
+    php artisan make:model Director -m
+    php artisan make:model Review -m
+    php artisan make:model User -m
+    php artisan make:model Admin -m
+    (m sostituisce i comandi php artisan make:migration create_movies_table, php artisan make:migration create_directors_table, php artisan make:migration create_reviews_table, php artisan make:migration create_users_table, php artisan make:migration create_admins_table)
+7. Digitare php artisan migrate per eseguire le migrazioni e creare le tabelle nel database. (per ricaricare nuovamente le tabelle php artisan migrate:fresh)
+8. Creazione delle colonne per ogni tabella con i comandi:
+    php artisan make:migration add_columns_to_movies_table --table=movies
+    php artisan make:migration add_columns_to_directors_table --table=directors
+    php artisan make:migration add_columns_to_reviews_table --table=reviews
+    php artisan make:migration add_columns_to_admins_table --table=admins
+9. Definizione file config movies.php e directors.php per gestione dati iniziali e compilazione tabelle tramite seeder.
