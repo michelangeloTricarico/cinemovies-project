@@ -9,6 +9,9 @@
     DB_PASSWORD=
     DB_COLLATION=utf8mb4_unicode_ci
 
+-----------------------------------------------------------
+#################### MODEL ################################
+-----------------------------------------------------------
 4. Definizione delle tabelle del database per la parte di Model
     4.1 Struttura del database:
     DATABASE: movies
@@ -103,3 +106,40 @@
     php artisan make:seeder UsersTableSeeder -> utilizzo faker
     php artisan make:seeder AdminsTableSeeder -> utilizzo faker
 11. Dopo compilazione seeder inviare php artisan migrate:fresh --seed
+12. Definizione delle relazioni per i vari models:
+    - Movie --> 1 - 1 <-- Directors
+    - Movie --> 1 - N <-- Reviews
+    - User --> 1 - N <-- Reviews
+-----------------------------------------------------------
+#################### CONTROLLER ###########################
+-----------------------------------------------------------
+12. Tramite il comando php artisan maker controller. Si creano i seguenti controller nella seguente struttura:
+app/
+└── Http/
+    └── Controllers/
+        │
+        ├── MovieController.php
+        ├── ReviewController.php
+        ├── AuthController.php
+        │
+        └── Admin/
+            ├── MovieController.php
+            └── ReviewController.php
+13. Per MovieController che si occuperà della visualizzazione dei film per utenti loggati o no vengono associati i seguendi metodi:
+    - index() --> per visualizzare tutta la lista dei film e recensioni altri utenti
+    - show() --> per visualizzare un film specifico e le recensioni associate a quel film 
+13. Per ReviewController che si occuperà della parte di gestione delle recensioni per gli utenti loggati saranno deifiniti i seguenti metodi:
+    - store() --> per salvare nel database i nuovi valori di una nuova recensione
+    - update() --> per aggiornare i valori di una specifica recensione lasciata dall'utente
+    - destroy() --> per eliminare una recensione lasciata dall'utente
+
+14. Creazione Api con comando php artisan install:api
+15. Creamo il controller API per inviare i dati al frontend react con php artisan make:controller Api/UserController
+16. Impostazione cors per richieste API
+17. Creazione forntend con React:
+    - definizione delle pages con Home, SingleMovies, UserLogin. Collegamento API e richiamo componenti 
+    - definizione componenti con Header, Footer, Card, ReviewForm, ReviewPost
+    - definizione layout
+    - Aggiornamento file App.jsx con il layout 
+    - Import bootstrap in main.jsx
+18. Inserimento immagini in storage>app>public>movies, creato link con php artisan storage:link
