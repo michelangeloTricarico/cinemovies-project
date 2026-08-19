@@ -95,7 +95,7 @@ export default function SingleMovie() {
         </div>
       </section>
 
-      {isLoggedIn && <ReviewForm movieId={id} onReviewAdded={fetchMovie} />}
+      {isLoggedIn && <ReviewForm movieId={id} />}
 
       <section style={{ width: "90%", maxWidth: "1100px", margin: "1.5rem auto 3rem", padding: "1.5rem", borderRadius: "1rem", backgroundColor: "#ffffff", boxShadow: "0 8px 20px rgba(0,0,0,0.05)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem", color: "#111827" }}>

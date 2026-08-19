@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function ReviewForm({ movieId, onReviewAdded }) {
+export default function ReviewForm({ movieId }) {
+  const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
 
   const [vote, setVote] = useState("");
@@ -25,7 +27,7 @@ export default function ReviewForm({ movieId, onReviewAdded }) {
       return;
     }
 
-    setLoading(true);
+    setLoading(true); //When a new request is sent to server for the review posted
 
     fetch(`${import.meta.env.VITE_API_URL}/movies/${movieId}/reviews`, {
       method: "POST",
@@ -37,10 +39,7 @@ export default function ReviewForm({ movieId, onReviewAdded }) {
         setLoading(false);
 
         if (data.success) {
-          setVote("");
-          setText("");
-          setSuccess("Recensione inviata con successo.");
-          if (onReviewAdded) onReviewAdded();
+          navigate(0);
         } else {
           setError("Errore durante l'invio della recensione.");
         }
