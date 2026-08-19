@@ -7,8 +7,8 @@ export default function SingleMovie() {
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
 
-  // Variables for set if user is logged or not for review
-  const isLoggedIn = false;
+  // Se in localStorage c'è un utente salvato dal login, siamo loggati
+  const isLoggedIn = localStorage.getItem("user") !== null;
 
   const fetchMovie = () => {
     fetch(`${import.meta.env.VITE_API_URL}/movies/${id}`)
