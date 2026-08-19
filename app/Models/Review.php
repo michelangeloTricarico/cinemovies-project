@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Review extends Model
 {
+    protected $fillable = ['movie_id', 'user_id', 'rating', 'title', 'comment'];
+
     public function movie(){
     return $this->belongsTo(Movie::class);
     }

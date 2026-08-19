@@ -11,5 +11,6 @@ Route::get('/user', function (Request $request) {
 
 Route::get('movies', [UserController::class, 'index']);
 Route::get('movies/{id}', [UserController::class, 'show']);
+Route::post('movies/{id}/reviews', [UserController::class, 'storeReview']);
 Route::post('register', [AuthContoller::class, 'register']);
 Route::post('login', [AuthContoller::class, 'login']);

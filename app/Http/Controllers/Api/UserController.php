@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Movie;
+use App\Models\Review;
 
 class UserController extends Controller
 {
@@ -21,6 +22,26 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'results' => $movie
+        ]);
+    }
+
+    public function storeReview(Request $request, $id){
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string',
+        ]);
+
+        $review = Review::create([
+            'movie_id' => $id,
+            'user_id' => $validated['user_id'],
+            'rating' => $validated['rating'],
+            'comment' => $validated['comment'],
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'results' => $review
         ]);
     }
 }
