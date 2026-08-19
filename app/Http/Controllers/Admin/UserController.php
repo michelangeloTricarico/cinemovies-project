@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Review;
+use App\Models\User;
 
-class ReviewController extends Controller
+class UserController extends Controller
 {
     public function destroy($id){
-        $review = Review::findOrFail($id);
-        $review->delete();
+        $user = User::findOrFail($id);
+        $user->delete();
 
         return redirect()->route('dashboard');
     }

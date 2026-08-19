@@ -87,22 +87,24 @@ export default function SingleMovie() {
                     </ul>
                   </div>
                 )}
-              </div>
-
-              <p className="mt-2 mb-0 text-secondary" style={{ lineHeight: 1.7 }}>{movie.description}</p>
-            </div>
+              </div> <p className="mt-2 mb-0 text-secondary" style={{ lineHeight: 1.7 }}>{movie.description}</p></div>
           </div>
         </div>
       </section>
-
+      {movie.trailer_url && (
+        <section className="container" style={{ maxWidth: "1100px" }}>
+          <h2 className="fs-5 mb-3">Trailer</h2>
+          <div className="ratio ratio-16x9">
+            <iframe src={movie.trailer_url.replace("watch?v=", "embed/")} title={`Trailer di ${movie.title}`} allowFullScreen></iframe>
+          </div>
+        </section>
+      )}
       {isLoggedIn && <ReviewForm movieId={id} />}
-
       <section style={{ width: "90%", maxWidth: "1100px", margin: "1.5rem auto 3rem", padding: "1.5rem", borderRadius: "1rem", backgroundColor: "#ffffff", boxShadow: "0 8px 20px rgba(0,0,0,0.05)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem", color: "#111827" }}>
           <i className="bi bi-chat-left-text" style={{ fontSize: "1.3rem" }} />
           <h2 style={{ margin: 0, fontSize: "1.15rem" }}>Recensioni del film</h2>
         </div>
-
         {movie.reviews && movie.reviews.length > 0 ? (
           movie.reviews.map((review) => (
             <ReviewPost key={review.id} review={review} onUpdate={fetchMovie} />
