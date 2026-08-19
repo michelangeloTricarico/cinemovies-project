@@ -9,22 +9,25 @@ use App\Models\Review;
 
 class UserController extends Controller
 {
+    // Method used to get movies, director and reviews information sent to frontend for Home page
     public function index(){
-        $movies = Movie::with(['director', 'reviews'])->get();
+        $movies = Movie::with(['director', 'reviews.user'])->get();
         return response()->json([
             'success' => true,
             'results' => $movies
         ]);
     }
 
+    // Method used to get movies, director and reviews information sent to frontend for Single Movie page
     public function show($id){
-        $movie = Movie::with(['director', 'reviews'])->findOrFail($id);
+        $movie = Movie::with(['director', 'reviews.user'])->findOrFail($id);
         return response()->json([
             'success' => true,
             'results' => $movie
         ]);
     }
 
+    // Method used in Single page for component Review Form, to save a new review in Review model
     public function storeReview(Request $request, $id){
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
@@ -42,6 +45,32 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'results' => $review
+        ]);
+    }
+
+    // Method used in Single page for component Review Form, to edit a new review in Review model
+    public function updateReview(Request $request, $id){
+        $validated = $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string',
+        ]);
+
+        $review = Review::findOrFail($id);
+        $review->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'results' => $review
+        ]);
+    }
+
+    // Method used in Single page for component Review Form, to destroy a new review in Review model
+    public function deleteReview($id){
+        $review = Review::findOrFail($id);
+        $review->delete();
+
+        return response()->json([
+            'success' => true
         ]);
     }
 }

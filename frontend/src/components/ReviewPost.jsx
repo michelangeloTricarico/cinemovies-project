@@ -1,54 +1,57 @@
 import { useState } from "react";
 
 export default function ReviewPost({ review, onUpdate }) {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const isOwner = user && review.user_id === user.id;
+
   const [isEditing, setIsEditing] = useState(false);
-  const [text, setText] = useState(review.text);
-  const [vote, setVote] = useState(review.vote);
+  const [text, setText] = useState(review.comment);
+  const [vote, setVote] = useState(review.rating);
   const [updatedAt, setUpdatedAt] = useState(review.updated_at || review.created_at);
 
-  const handleSave = async () => {
-    const modifiedAt = new Date().toISOString().slice(0, 19).replace("T", " ");
-    try {
-      const response = await fetch(`http://localhost:3000/movies/reviews/${review.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, vote, updated_at: modifiedAt }),
+  const handleSave = () => {
+    fetch(`${import.meta.env.VITE_API_URL}/movies/reviews/${review.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ rating: vote, comment: text }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          setText(data.results.comment);
+          setVote(data.results.rating);
+          setUpdatedAt(data.results.updated_at);
+          setIsEditing(false);
+          if (onUpdate) onUpdate();
+        } else {
+          alert("Errore durante l'aggiornamento della recensione.");
+        }
+      })
+      .catch((error) => {
+        console.error("Errore durante l'aggiornamento della recensione:", error);
+        alert("Impossibile aggiornare la recensione. Riprova più tardi.");
       });
-
-      if (!response.ok) {
-        throw new Error("Errore durante l'aggiornamento della recensione.");
-      }
-
-      const updatedReview = await response.json();
-      setText(updatedReview.text);
-      setVote(updatedReview.vote);
-      setUpdatedAt(updatedReview.updated_at || modifiedAt);
-      setIsEditing(false);
-      if (onUpdate) onUpdate();
-    } catch (err) {
-      console.error(err);
-      alert("Impossibile aggiornare la recensione. Riprova più tardi.");
-    }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     const confirmed = window.confirm("Vuoi veramente eliminare questa recensione?");
     if (!confirmed) return;
 
-    try {
-      const response = await fetch(`http://localhost:3000/movies/reviews/${review.id}`, {
-        method: "DELETE",
+    fetch(`${import.meta.env.VITE_API_URL}/movies/reviews/${review.id}`, {
+      method: "DELETE",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          if (onUpdate) onUpdate();
+        } else {
+          alert("Errore durante l'eliminazione della recensione.");
+        }
+      })
+      .catch((error) => {
+        console.error("Errore durante l'eliminazione della recensione:", error);
+        alert("Impossibile eliminare la recensione. Riprova più tardi.");
       });
-
-      if (!response.ok) {
-        throw new Error("Errore durante l'eliminazione della recensione.");
-      }
-
-      if (onUpdate) onUpdate();
-    } catch (err) {
-      console.error(err);
-      alert("Impossibile eliminare la recensione. Riprova più tardi.");
-    }
   };
 
   return (
@@ -56,17 +59,19 @@ export default function ReviewPost({ review, onUpdate }) {
       <div className="card-body">
         <div className="d-flex justify-content-between align-items-center mb-2">
           <div>
-            <p className="fw-bold mb-0">{review.name}</p>
+            <p className="fw-bold mb-0">{review.user ? review.user.name : "Utente"}</p>
             <p className="text-secondary mb-0">Voto: {vote}/5</p>
           </div>
-          <div className="d-flex gap-2">
-            <button type="button" className="btn btn-dark btn-sm" onClick={() => setIsEditing(!isEditing)}>
-              {isEditing ? "Annulla" : "Modifica"}
-            </button>
-            <button type="button" className="btn btn-danger btn-sm" onClick={handleDelete}>
-              Elimina
-            </button>
-          </div>
+          {isOwner && (
+            <div className="d-flex gap-2">
+              <button type="button" className="btn btn-dark btn-sm" onClick={() => setIsEditing(!isEditing)}>
+                {isEditing ? "Annulla" : "Modifica"}
+              </button>
+              <button type="button" className="btn btn-danger btn-sm" onClick={handleDelete}>
+                Elimina
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="row g-3 mb-2">
