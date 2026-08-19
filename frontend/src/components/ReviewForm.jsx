@@ -53,61 +53,55 @@ export default function ReviewForm({ movieId, onReviewAdded }) {
   };
 
   return (
-    <div style={{ width: "90%", maxWidth: "1100px", margin: "1.5rem auto 0", padding: "1.5rem", borderRadius: "1rem", backgroundColor: "#ffffff", boxShadow: "0 8px 20px rgba(0,0,0,0.05)" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem", color: "#111827" }}>
-        <i className="bi bi-person-circle" style={{ fontSize: "1.3rem" }} />
-        <i className="bi bi-pencil-square" style={{ fontSize: "1.3rem" }} />
-        <h2 style={{ margin: 0, fontSize: "1.15rem" }}>Aggiungi una recensione</h2>
+    <div className="card w-100 mt-4" style={{ maxWidth: "1100px" }}>
+      <div className="card-body">
+        <h2 className="card-title fs-5">Aggiungi una recensione</h2>
+
+        <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
+          <div className="row g-3">
+            <div className="col-md-6">
+              <label className="form-label">Nome</label>
+              <input
+                className="form-control"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Il tuo nome"
+              />
+            </div>
+
+            <div className="col-md-6">
+              <label className="form-label">Voto (max 5)</label>
+              <input
+                type="number"
+                className="form-control"
+                value={vote}
+                step="1"
+                min="1"
+                max="5"
+                onChange={(e) => setVote(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="form-label">Recensione</label>
+            <textarea
+              className="form-control"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Scrivi qui la tua recensione"
+              rows={5}
+            />
+          </div>
+
+          {error && <div className="alert alert-danger py-2 mb-0">{error}</div>}
+          {success && <div className="alert alert-success py-2 mb-0">{success}</div>}
+
+          <button type="submit" disabled={loading} className="btn btn-dark">
+            {loading ? "Invio in corso..." : "Pubblica recensione"}
+          </button>
+        </form>
       </div>
-
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-          <label style={{ display: "flex", flexDirection: "column", gap: "0.35rem", color: "#374151" }}>
-            Nome
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Il tuo nome"
-              style={{ padding: "0.85rem", borderRadius: "0.75rem", border: "1px solid #d1d5db" }}
-            />
-          </label>
-
-          <label style={{ display: "flex", flexDirection: "column", gap: "0.35rem", color: "#374151" }}>
-            Voto (max 5)
-            <input
-              type="number"
-              value={vote}
-              step="1"
-              min="1"
-              max="5"
-              onChange={(e) => setVote(e.target.value)}
-              style={{ padding: "0.85rem", borderRadius: "0.75rem", border: "1px solid #d1d5db" }}
-            />
-          </label>
-        </div>
-
-        <label style={{ display: "flex", flexDirection: "column", gap: "0.35rem", color: "#374151" }}>
-          Recensione
-          <textarea
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="Scrivi qui la tua recensione"
-            rows={5}
-            style={{ padding: "0.85rem", borderRadius: "0.75rem", border: "1px solid #d1d5db", resize: "vertical" }}
-          />
-        </label>
-
-        {error && <p style={{ color: "#bf1e2e", margin: 0 }}>{error}</p>}
-        {success && <p style={{ color: "#166534", margin: 0 }}>{success}</p>}
-
-        <button
-          type="submit"
-          disabled={loading}
-          style={{ padding: "0.85rem 1rem", borderRadius: "999px", border: "none", backgroundColor: "#111827", color: "#ffffff", fontWeight: 700, cursor: loading ? "not-allowed" : "pointer" }}
-        >
-          {loading ? "Invio in corso..." : "Pubblica recensione"}
-        </button>
-      </form>
     </div>
   );
 }

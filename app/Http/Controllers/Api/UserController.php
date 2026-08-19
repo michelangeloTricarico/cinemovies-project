@@ -14,6 +14,13 @@ class UserController extends Controller
             'success' => true,
             'results' => $movies
         ]);
-        dd($movies);
+    }
+
+    public function show($id){
+        $movie = Movie::with(['director', 'reviews'])->findOrFail($id);
+        return response()->json([
+            'success' => true,
+            'results' => $movie
+        ]);
     }
 }

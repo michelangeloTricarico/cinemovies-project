@@ -7,6 +7,9 @@ export default function SingleMovie() {
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
 
+  // Variables for set if user is logged or not for review
+  const isLoggedIn = false;
+
   const fetchMovie = () => {
     fetch(`${import.meta.env.VITE_API_URL}/movies/${id}`)
       .then((response) => {
@@ -15,7 +18,7 @@ export default function SingleMovie() {
         }
         return response.json();
       })
-      .then((data) => setMovie(data))
+      .then((data) => setMovie(data.results))
       .catch((error) => console.error("Errore nel caricamento del film:", error));
   };
 
@@ -27,62 +30,72 @@ export default function SingleMovie() {
     return <p style={{ padding: "2rem" }}>Caricamento film...</p>;
   }
 
+  const averageVote =
+    movie.reviews && movie.reviews.length > 0
+      ? movie.reviews.reduce((sum, review) => sum + review.rating, 0) / movie.reviews.length
+      : null;
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <section style={{ padding: "2rem 1.5rem", display: "flex", justifyContent: "center" }}>
-        <div
-          style={{
-            width: "90%",
-            maxWidth: "1100px",
-            backgroundColor: "#ffffff",
-            borderRadius: "1.25rem",
-            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.08)",
-            overflow: "hidden",
-            display: "grid",
-            gridTemplateColumns: "minmax(280px, 0.9fr) minmax(320px, 1.1fr)",
-            gap: "1.5rem",
-          }}
-        >
-          <div style={{ backgroundColor: "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", padding: "1.5rem" }}>
-            <img
-              src={movie.image || "https://placehold.co/800x1200?text=CineBool"}
-              alt={movie.title}
-              style={{ width: "100%", maxHeight: "500px", objectFit: "contain" }}
-            />
-          </div>
-
-          <div style={{ padding: "1.5rem 1.5rem 1.5rem 0", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", color: "#111827" }}>
-              <i className="bi bi-film" style={{ fontSize: "1.2rem" }} />
-              <h1 style={{ margin: 0, fontSize: "1.8rem" }}>{movie.title}</h1>
+    <div className="d-flex flex-column align-items-center">
+      <section className="container py-5 d-flex justify-content-center">
+        <div className="card rounded-4 overflow-hidden w-100" style={{ maxWidth: "1100px" }}>
+          <div className="row g-0">
+            <div className="col-md-5 bg-light d-flex align-items-center justify-content-center p-4">
+              <img
+                src={movie.poster ? `${import.meta.env.VITE_API_URL.replace('/api', '')}/storage/${movie.poster}` : "https://placehold.co/800x1200?text=CineBool"}
+                alt={movie.title}
+                className="img-fluid"
+                style={{ maxHeight: "500px", objectFit: "contain" }}
+              />
             </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", color: "#4b5563" }}>
-              <i className="bi bi-star-fill" style={{ color: "#f59e0b" }} />
-              <span><strong>Voto:</strong> {movie.vote}/5</span>
-            </div>
+            <div className="col-md-7 p-4 d-flex flex-column gap-2">
+              <div className="d-flex align-items-center gap-2 text-dark">
+                <i className="bi bi-film fs-4" />
+                <h1 className="m-0 fs-2">{movie.title}</h1>
+              </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", color: "#4b5563" }}>
-              <i className="bi bi-tags" />
-              <span><strong>Genere:</strong> {movie.genre}</span>
-            </div>
+              <div className="d-flex align-items-center gap-2 text-secondary">
+                <i className="bi bi-star-fill text-warning" />
+                <span><strong>Voto:</strong> {averageVote !== null ? `${averageVote.toFixed(1)}/5` : "Nessun voto"}</span>
+              </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", color: "#4b5563" }}>
-              <i className="bi bi-calendar3" />
-              <span><strong>Anno:</strong> {movie.release_year}</span>
-            </div>
+              <div className="d-flex align-items-center gap-2 text-secondary">
+                <i className="bi bi-tags" />
+                <span><strong>Genere:</strong> {movie.genre}</span>
+              </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", color: "#4b5563" }}>
-              <i className="bi bi-person-video" />
-              <span><strong>Regista:</strong> {movie.director}</span>
-            </div>
+              <div className="d-flex align-items-center gap-2 text-secondary">
+                <i className="bi bi-calendar3" />
+                <span><strong>Anno:</strong> {movie.release_date}</span>
+              </div>
 
-            <p style={{ margin: "0.5rem 0 0", color: "#374151", lineHeight: 1.7 }}>{movie.abstract}</p>
+              <div className="d-flex align-items-center gap-2 text-secondary">
+                <i className="bi bi-person-video" />
+                <span><strong>Regista:</strong> {movie.director ? `${movie.director.first_name} ${movie.director.last_name}` : "N/D"}</span>
+
+                {movie.director && (
+                  <div className="dropdown">
+                    <button className="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"> Altre info </button>
+                    <ul className="dropdown-menu p-3" style={{ minWidth: "260px" }}>
+                      <li className="mb-2">
+                        <strong>Data di nascita:</strong> {movie.director.birth_date || "N/D"}
+                      </li>
+                      <li>
+                        <strong>Biografia:</strong> {movie.director.biography || "Nessuna biografia disponibile."}
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              <p className="mt-2 mb-0 text-secondary" style={{ lineHeight: 1.7 }}>{movie.description}</p>
+            </div>
           </div>
         </div>
       </section>
 
-      <ReviewForm movieId={id} onReviewAdded={fetchMovie} />
+      {isLoggedIn && <ReviewForm movieId={id} onReviewAdded={fetchMovie} />}
 
       <section style={{ width: "90%", maxWidth: "1100px", margin: "1.5rem auto 3rem", padding: "1.5rem", borderRadius: "1rem", backgroundColor: "#ffffff", boxShadow: "0 8px 20px rgba(0,0,0,0.05)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem", color: "#111827" }}>

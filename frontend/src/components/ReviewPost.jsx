@@ -52,70 +52,60 @@ export default function ReviewPost({ review, onUpdate }) {
   };
 
   return (
-    <div style={{ border: "1px solid #e5e7eb", borderRadius: "1rem", padding: "1rem", backgroundColor: "#ffffff", boxShadow: "0 4px 12px rgba(0,0,0,0.05)", marginBottom: "1rem" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
-        <div>
-          <p style={{ margin: 0, fontWeight: 700 }}>{review.name}</p>
-          <p style={{ margin: 0, color: "#6b7280" }}>Voto: {vote}/5</p>
-        </div>
-        <div style={{ display: "flex", gap: "0.5rem" }}>
-          <button
-            type="button"
-            onClick={() => setIsEditing(!isEditing)}
-            style={{ backgroundColor: "#111827", color: "#fff", border: "none", borderRadius: "999px", padding: "0.5rem 0.9rem", cursor: "pointer" }}
-          >
-            {isEditing ? "Annulla" : "Modifica"}
-          </button>
-          <button
-            type="button"
-            onClick={handleDelete}
-            style={{ backgroundColor: "#dc2626", color: "#fff", border: "none", borderRadius: "999px", padding: "0.5rem 0.9rem", cursor: "pointer" }}
-          >
-            Elimina
-          </button>
-        </div>
-      </div>
-
-      <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem", marginBottom: "0.75rem" }}>
-        <div style={{ flex: 1 }}>
-          <label style={{ display: "block", fontSize: "0.95rem", fontWeight: 600, marginBottom: "0.35rem" }}>Post</label>
-          <textarea
-            value={text}
-            disabled={!isEditing}
-            onChange={(e) => setText(e.target.value)}
-            rows={4}
-            style={{ width: "100%", borderRadius: "0.75rem", border: "1px solid #d1d5db", padding: "0.75rem", resize: "vertical", backgroundColor: isEditing ? "#ffffff" : "#f9fafb" }}
-          />
+    <div className="card mb-3">
+      <div className="card-body">
+        <div className="d-flex justify-content-between align-items-center mb-2">
+          <div>
+            <p className="fw-bold mb-0">{review.name}</p>
+            <p className="text-secondary mb-0">Voto: {vote}/5</p>
+          </div>
+          <div className="d-flex gap-2">
+            <button type="button" className="btn btn-dark btn-sm" onClick={() => setIsEditing(!isEditing)}>
+              {isEditing ? "Annulla" : "Modifica"}
+            </button>
+            <button type="button" className="btn btn-danger btn-sm" onClick={handleDelete}>
+              Elimina
+            </button>
+          </div>
         </div>
 
-        <div style={{ width: "120px", textAlign: "right" }}>
-          <label style={{ display: "block", fontSize: "0.95rem", fontWeight: 600, marginBottom: "0.35rem" }}>Voto</label>
-          <input
-            type="number"
-            min="1"
-            max="5"
-            value={vote}
-            disabled={!isEditing}
-            onChange={(e) => setVote(e.target.value)}
-            style={{ width: "100%", borderRadius: "0.75rem", border: "1px solid #d1d5db", padding: "0.75rem" }}
-          />
-        </div>
-      </div>
+        <div className="row g-3 mb-2">
+          <div className="col">
+            <label className="form-label">Post</label>
+            <textarea
+              className="form-control"
+              value={text}
+              disabled={!isEditing}
+              onChange={(e) => setText(e.target.value)}
+              rows={4}
+            />
+          </div>
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", color: "#6b7280", fontSize: "0.9rem" }}>
-        <div>
-          <p style={{ margin: 0 }}>Creato: {review.created_at}</p>
-          <p style={{ margin: 0 }}>Aggiornato: {updatedAt}</p>
+          <div className="col-md-2">
+            <label className="form-label">Voto</label>
+            <input
+              type="number"
+              className="form-control"
+              min="1"
+              max="5"
+              value={vote}
+              disabled={!isEditing}
+              onChange={(e) => setVote(e.target.value)}
+            />
+          </div>
         </div>
-        {isEditing && (
-          <button
-            type="button"
-            onClick={handleSave}
-            style={{ backgroundColor: "#111827", color: "#fff", border: "none", borderRadius: "999px", padding: "0.5rem 0.9rem", cursor: "pointer" }}
-          >
-            Salva
-          </button>
-        )}
+
+        <div className="d-flex justify-content-between align-items-center text-secondary small">
+          <div>
+            <p className="mb-0">Creato: {review.created_at}</p>
+            <p className="mb-0">Aggiornato: {updatedAt}</p>
+          </div>
+          {isEditing && (
+            <button type="button" className="btn btn-dark btn-sm" onClick={handleSave}>
+              Salva
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

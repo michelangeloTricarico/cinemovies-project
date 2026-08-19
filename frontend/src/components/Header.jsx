@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Header() {
   return (
     <header style={{ backgroundColor: "#f8fafc", padding: "1rem 1.5rem", borderBottom: "1px solid #e5e7eb" }}>
@@ -12,10 +14,10 @@ export default function Header() {
           <a href="#chi-siamo" style={{ color: "#374151", textDecoration: "none" }}>
             Chi Siamo
           </a>
-          <button type="button" style={{ color: "#374151", background: "none", border: "none", cursor: "pointer", fontSize: "1rem", display: "flex", alignItems: "center", gap: "6px" }}>
+          <Link to="/login" style={{ color: "#374151", textDecoration: "none", display: "flex", alignItems: "center", gap: "6px" }}>
             <i className="bi bi-box-arrow-in-right"></i>
             Login
-          </button>
+          </Link>
         </div>
       </nav>
     </header>
