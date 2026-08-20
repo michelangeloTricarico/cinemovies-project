@@ -55,13 +55,13 @@ class MovieController extends Controller
     }
 
     public function edit($id){
-        $movie = Movie::with('director')->findOrFail($id);
+        $movie = Movie::with('director')->find($id);
         $directors = Director::all();
         return view('admin.movies.edit', ['movie' => $movie, 'directors' => $directors]);
     }
 
     public function update(Request $request, $id){
-        $movie = Movie::findOrFail($id);
+        $movie = Movie::find($id);
 
         $validated = $request->validate([
             'director_id' => 'nullable|exists:directors,id',
@@ -108,7 +108,7 @@ class MovieController extends Controller
     }
 
     public function destroy($id){
-        $movie = Movie::findOrFail($id);
+        $movie = Movie::find($id);
         $movie->delete();
 
         return redirect()->route('dashboard');

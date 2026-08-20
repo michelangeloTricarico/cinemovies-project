@@ -9,7 +9,7 @@ use App\Models\Review;
 class ReviewController extends Controller
 {
     public function destroy($id){
-        $review = Review::findOrFail($id);
+        $review = Review::find($id);
         $review->delete();
 
         return redirect()->route('dashboard');
