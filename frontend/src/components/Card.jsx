@@ -11,16 +11,15 @@ function Card({ movie }) {
     // Set poster address
     const posterUrl = `${import.meta.env.VITE_API_URL.replace('/api', '')}/storage/${poster}`;
     return (
-        <div className="card">
-            <img src={posterUrl}alt={title}/>
-            <div className="card-body">
+        <div className="card h-100">
+            <img src={posterUrl} alt={title} className="card-img-top" style={{ height: "320px", objectFit: "cover" }} />
+            <div className="card-body d-flex flex-column">
                 <h3>{title}</h3>
                 <p>{shortDescription}</p>
                 {averageVote !== null && (<p> <i className="bi bi-star-fill"></i> {averageVote.toFixed(1)} / 5</p>)}
-                <Link to={`/movies/${id}`} className="btn btn-primary">Dettagli</Link>
+                <Link to={`/movies/${id}`} className="btn btn-dark mt-auto">Dettagli</Link>
             </div>
         </div>
     );
 }
-
 export default Card;

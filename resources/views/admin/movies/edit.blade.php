@@ -8,11 +8,30 @@
 
     <div class="card">
         <div class="card-body">
-            <form method="POST" action="{{ route('movies.update', $movie->id) }}">
+            <form method="POST" action="{{ route('movies.update', $movie->id) }}" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
                 <h4 class="fs-6 text-secondary mt-3">{{ __('Regista') }}</h4>
+                <div class="mb-3">
+                    <label class="form-label">{{ __('Scegli un regista esistente o compila i campi sotto per crearne uno nuovo') }}</label>
+                    <select id="director-select" class="form-select">
+                        <option value="">{{ __('-- Nuovo regista --') }}</option>
+                        @foreach ($directors as $director)
+                        <option
+                            value="{{ $director->id }}"
+                            data-first-name="{{ $director->first_name }}"
+                            data-last-name="{{ $director->last_name }}"
+                            data-birth-date="{{ $director->birth_date }}"
+                            data-biography="{{ $director->biography }}"
+                            {{ $movie->director_id == $director->id ? 'selected' : '' }}>
+                            {{ $director->first_name }} {{ $director->last_name }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
+                <input type="hidden" name="director_id" id="director-id-input" value="{{ old('director_id', $movie->director_id) }}">
+
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label">{{ __('Nome') }}</label>
@@ -54,8 +73,12 @@
                         @error('release_date') <span class="invalid-feedback">{{ $message }}</span> @enderror
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">{{ __('Poster (percorso in storage)') }}</label>
-                        <input type="text" name="poster" class="form-control @error('poster') is-invalid @enderror" value="{{ old('poster', $movie->poster) }}" placeholder="movies/nome-file.jpg">
+                        <label class="form-label">{{ __('Poster') }}</label>
+                        @if ($movie->poster)
+                        <img src="{{ asset('storage/' . $movie->poster) }}" alt="{{ $movie->title }}" class="d-block mb-2" style="max-height: 120px;">
+                        @endif
+                        <input type="file" name="poster" class="form-control @error('poster') is-invalid @enderror" accept="image/*">
+                        <small class="text-secondary">{{ __('Lascia vuoto per non cambiare il poster attuale.') }}</small>
                         @error('poster') <span class="invalid-feedback">{{ $message }}</span> @enderror
                     </div>
                     <div class="col-12">
@@ -78,4 +101,21 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('director-select').addEventListener('change', function () {
+        const selected = this.options[this.selectedIndex];
+        const idInput = document.getElementById('director-id-input');
+        const firstNameInput = document.querySelector('[name="first_name"]');
+        const lastNameInput = document.querySelector('[name="last_name"]');
+        const birthDateInput = document.querySelector('[name="birth_date"]');
+        const biographyInput = document.querySelector('[name="biography"]');
+
+        idInput.value = selected.value;
+        firstNameInput.value = selected.dataset.firstName || '';
+        lastNameInput.value = selected.dataset.lastName || '';
+        birthDateInput.value = selected.dataset.birthDate || '';
+        biographyInput.value = selected.dataset.biography || '';
+    });
+</script>
 @endsection

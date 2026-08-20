@@ -7,7 +7,6 @@ export default function SingleMovie() {
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
 
-  // Se in localStorage c'è un utente salvato dal login, siamo loggati
   const isLoggedIn = localStorage.getItem("user") !== null;
 
   const fetchMovie = () => {
@@ -42,7 +41,7 @@ export default function SingleMovie() {
           <div className="row g-0">
             <div className="col-md-5 bg-light d-flex align-items-center justify-content-center p-4">
               <img
-                src={movie.poster ? `${import.meta.env.VITE_API_URL.replace('/api', '')}/storage/${movie.poster}` : "https://placehold.co/800x1200?text=CineBool"}
+                src={movie.poster ? `${import.meta.env.VITE_API_URL.replace('/api', '')}/storage/${movie.poster}` : "https://placehold.co/800x1200?text=CineMovies"}
                 alt={movie.title}
                 className="img-fluid"
                 style={{ maxHeight: "500px", objectFit: "contain" }}
@@ -87,7 +86,7 @@ export default function SingleMovie() {
                     </ul>
                   </div>
                 )}
-              </div> <p className="mt-2 mb-0 text-secondary" style={{ lineHeight: 1.7 }}>{movie.description}</p></div>
+              </div><p className="mt-2 mb-0 text-secondary" style={{ lineHeight: 1.7 }}>{movie.description}</p></div>
           </div>
         </div>
       </section>

@@ -33,10 +33,28 @@
                 <div class="card-body">
                     <h3 class="card-title fs-5">{{ __('Aggiungi un film') }}</h3>
 
-                    <form method="POST" action="{{ route('movies.store') }}">
+                    <form method="POST" action="{{ route('movies.store') }}" enctype="multipart/form-data">
                         @csrf
 
                         <h4 class="fs-6 text-secondary mt-3">{{ __('Regista') }}</h4>
+                        <div class="mb-3">
+                            <label class="form-label">{{ __('Scegli un regista esistente o compila i campi sotto per crearne uno nuovo') }}</label>
+                            <select id="director-select" class="form-select">
+                                <option value="">{{ __('-- Nuovo regista --') }}</option>
+                                @foreach ($directors as $director)
+                                <option
+                                    value="{{ $director->id }}"
+                                    data-first-name="{{ $director->first_name }}"
+                                    data-last-name="{{ $director->last_name }}"
+                                    data-birth-date="{{ $director->birth_date }}"
+                                    data-biography="{{ $director->biography }}">
+                                    {{ $director->first_name }} {{ $director->last_name }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <input type="hidden" name="director_id" id="director-id-input">
+
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">{{ __('Nome') }}</label>
@@ -78,8 +96,8 @@
                                 @error('release_date') <span class="invalid-feedback">{{ $message }}</span> @enderror
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">{{ __('Poster (percorso in storage)') }}</label>
-                                <input type="text" name="poster" class="form-control @error('poster') is-invalid @enderror" value="{{ old('poster') }}" placeholder="movies/nome-file.jpg">
+                                <label class="form-label">{{ __('Poster') }}</label>
+                                <input type="file" name="poster" class="form-control @error('poster') is-invalid @enderror" accept="image/*">
                                 @error('poster') <span class="invalid-feedback">{{ $message }}</span> @enderror
                             </div>
                             <div class="col-12">
@@ -100,39 +118,7 @@
             </div>
 
             @foreach ($movies as $movie)
-            <div class="card mb-3">
-                <div class="row g-0">
-                    <div class="col-md-3 bg-light d-flex align-items-center justify-content-center p-3">
-                        <img
-                            src="{{ $movie->poster ? asset('storage/' . $movie->poster) : 'https://placehold.co/400x600?text=CineBool' }}"
-                            alt="{{ $movie->title }}"
-                            class="img-fluid"
-                            style="max-height: 220px; object-fit: contain;">
-                    </div>
-                    <div class="col-md-9">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <h4 class="fs-5">{{ $movie->title }}</h4>
-                                <div class="d-flex gap-2">
-                                    <a href="{{ route('movies.edit', $movie->id) }}" class="btn btn-dark btn-sm">{{ __('Modifica') }}</a>
-                                    <form method="POST" action="{{ route('movies.destroy', $movie->id) }}" onsubmit="return confirm('{{ __('Vuoi eliminare questo film?') }}');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">{{ __('Elimina') }}</button>
-                                    </form>
-                                </div>
-                            </div>
-                            <p class="text-secondary mb-1"><strong>{{ __('Genere') }}:</strong> {{ $movie->genre }}</p>
-                            <p class="text-secondary mb-1"><strong>{{ __('Uscita') }}:</strong> {{ $movie->release_date }}</p>
-                            <p class="text-secondary mb-1">
-                                <strong>{{ __('Regista') }}:</strong>
-                                {{ $movie->director ? $movie->director->first_name . ' ' . $movie->director->last_name : 'N/D' }}
-                            </p>
-                            <p class="mb-0">{{ $movie->description }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                <x-movieCard :movie="$movie" />
             @endforeach
         </div>
 
@@ -198,4 +184,21 @@
 
     </div>
 </div>
+
+<script>
+    document.getElementById('director-select').addEventListener('change', function () {
+        const selected = this.options[this.selectedIndex];
+        const idInput = document.getElementById('director-id-input');
+        const firstNameInput = document.querySelector('[name="first_name"]');
+        const lastNameInput = document.querySelector('[name="last_name"]');
+        const birthDateInput = document.querySelector('[name="birth_date"]');
+        const biographyInput = document.querySelector('[name="biography"]');
+
+        idInput.value = selected.value;
+        firstNameInput.value = selected.dataset.firstName || '';
+        lastNameInput.value = selected.dataset.lastName || '';
+        birthDateInput.value = selected.dataset.birthDate || '';
+        biographyInput.value = selected.dataset.biography || '';
+    });
+</script>
 @endsection

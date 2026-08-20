@@ -20,7 +20,7 @@ class UserController extends Controller
 
     // Method used to get movies, director and reviews information sent to frontend for Single Movie page
     public function show($id){
-        $movie = Movie::with(['director', 'reviews.user'])->findOrFail($id);
+        $movie = Movie::with(['director', 'reviews.user'])->find($id);
         return response()->json([
             'success' => true,
             'results' => $movie
@@ -55,7 +55,7 @@ class UserController extends Controller
             'comment' => 'required|string',
         ]);
 
-        $review = Review::findOrFail($id);
+        $review = Review::find($id);
         $review->update($validated);
 
         return response()->json([
@@ -66,7 +66,7 @@ class UserController extends Controller
 
     // Method used in Single page for component Review Form, to destroy a new review in Review model
     public function deleteReview($id){
-        $review = Review::findOrFail($id);
+        $review = Review::find($id);
         $review->delete();
 
         return response()->json([

@@ -67,49 +67,23 @@ export default function ReviewPost({ review, onUpdate }) {
               <button type="button" className="btn btn-dark btn-sm" onClick={() => setIsEditing(!isEditing)}>
                 {isEditing ? "Annulla" : "Modifica"}
               </button>
-              <button type="button" className="btn btn-danger btn-sm" onClick={handleDelete}>
-                Elimina
-              </button>
+              <button type="button" className="btn btn-danger btn-sm" onClick={handleDelete}>Elimina</button>
             </div>
           )}
         </div>
-
         <div className="row g-3 mb-2">
           <div className="col">
             <label className="form-label">Post</label>
-            <textarea
-              className="form-control"
-              value={text}
-              disabled={!isEditing}
-              onChange={(e) => setText(e.target.value)}
-              rows={4}
-            />
+            <textarea className="form-control" value={text} disabled={!isEditing} onChange={(e) => setText(e.target.value)} rows={4}/>
           </div>
-
           <div className="col-md-2">
             <label className="form-label">Voto</label>
-            <input
-              type="number"
-              className="form-control"
-              min="1"
-              max="5"
-              value={vote}
-              disabled={!isEditing}
-              onChange={(e) => setVote(e.target.value)}
-            />
+            <input type="number" className="form-control" min="1" max="5" value={vote} disabled={!isEditing} onChange={(e) => setVote(e.target.value)}/>
           </div>
         </div>
-
         <div className="d-flex justify-content-between align-items-center text-secondary small">
-          <div>
-            <p className="mb-0">Creato: {review.created_at}</p>
-            <p className="mb-0">Aggiornato: {updatedAt}</p>
-          </div>
-          {isEditing && (
-            <button type="button" className="btn btn-dark btn-sm" onClick={handleSave}>
-              Salva
-            </button>
-          )}
+          <div> <p className="mb-0">Creato: {review.created_at}</p><p className="mb-0">Aggiornato: {updatedAt}</p></div>
+          {isEditing && (<button type="button" className="btn btn-dark btn-sm" onClick={handleSave}> Salva </button>)}
         </div>
       </div>
     </div>

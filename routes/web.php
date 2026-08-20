@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Models\Movie;
 use App\Models\Review;
 use App\Models\User;
+use App\Models\Director;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,6 +20,7 @@ Route::get('/dashboard', function () {
         'movies' => Movie::with('director')->get(),
         'reviews' => Review::with(['movie', 'user'])->get(),
         'users' => User::all(),
+        'directors' => Director::all(),
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 

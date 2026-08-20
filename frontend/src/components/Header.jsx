@@ -16,26 +16,12 @@ export default function Header() {
           <img src={"Cine_movies_logo.png"} alt="CineMovies" style={{height: "45px",width: "auto",display: "block"}}/>
         </a>
         <div style={{ display: "flex", gap: "1rem" }}>
-          <a href="/movies" style={{ color: "#374151", textDecoration: "none" }}>
-            Home
-          </a>
-          <a href="#chi-siamo" style={{ color: "#374151", textDecoration: "none" }}>
-            Chi Siamo
-          </a>
+          <a href="/movies" style={{ color: "#374151", textDecoration: "none" }}>Home</a>
+          <a href="#chi-siamo" style={{ color: "#374151", textDecoration: "none" }}>Chi Siamo</a>
           {isLoggedIn ? (
-            <button
-              type="button"
-              onClick={handleLogout}
-              style={{ color: "#374151", background: "none", border: "none", cursor: "pointer", fontSize: "1rem", display: "flex", alignItems: "center", gap: "6px" }}
-            >
-              <i className="bi bi-box-arrow-right"></i>
-              Logout
-            </button>
+            <button type="button" onClick={handleLogout} style={{ color: "#374151", background: "none", border: "none", cursor: "pointer", fontSize: "1rem", display: "flex", alignItems: "center", gap: "6px" }}><i className="bi bi-box-arrow-right"></i>Logout</button>
           ) : (
-            <Link to="/login" style={{ color: "#374151", textDecoration: "none", display: "flex", alignItems: "center", gap: "6px" }}>
-              <i className="bi bi-box-arrow-in-right"></i>
-              Login
-            </Link>
+            <Link to="/login" style={{ color: "#374151", textDecoration: "none", display: "flex", alignItems: "center", gap: "6px" }}><i className="bi bi-box-arrow-in-right"></i>Login</Link>
           )}
         </div>
       </nav>

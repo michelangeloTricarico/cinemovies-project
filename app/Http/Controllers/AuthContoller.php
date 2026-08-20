@@ -1,5 +1,5 @@
 <?php
-
+// This controller is used for Users authentification
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;

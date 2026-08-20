@@ -10,7 +10,7 @@
     DB_COLLATION=utf8mb4_unicode_ci
 
 -----------------------------------------------------------
-#################### MODEL ################################
+######################### MODEL #############################
 -----------------------------------------------------------
 4. Definizione delle tabelle del database per la parte di Model
     4.1 Struttura del database:
@@ -91,7 +91,7 @@
     php artisan make:model Review -m
     php artisan make:model User -m
     php artisan make:model Admin -m
-    (m sostituisce i comandi php artisan make:migration create_movies_table, php artisan make:migration create_directors_table, php artisan make:migration create_reviews_table, php artisan make:migration create_users_table, php artisan make:migration create_admins_table)
+    (-m sostituisce i comandi php artisan make:migration create_movies_table, php artisan make:migration create_directors_table, php artisan make:migration create_reviews_table, php artisan make:migration create_users_table, php artisan make:migration create_admins_table)
 7. Digitare php artisan migrate per eseguire le migrazioni e creare le tabelle nel database. (per ricaricare nuovamente le tabelle php artisan migrate:fresh)
 8. Creazione delle colonne per ogni tabella con i comandi:
     php artisan make:migration add_columns_to_movies_table --table=movies
@@ -102,7 +102,7 @@
 10. Creazione dei seeder per popolare le tabelle con i comandi:
     php artisan make:seeder MoviesTableSeeder -> utilizzo file di configurazione config/movies.php
     php artisan make:seeder DirectorsTableSeeder -> utilizzo file di configurazione config/directors.php
-    php artisan make:seeder ReviewsTableSeeder 
+    php artisan make:seeder ReviewsTableSeeder
     php artisan make:seeder UsersTableSeeder -> utilizzo faker
     php artisan make:seeder AdminsTableSeeder -> utilizzo faker
 11. Dopo compilazione seeder inviare php artisan migrate:fresh --seed
@@ -110,10 +110,11 @@
     - Movie --> 1 - 1 <-- Directors
     - Movie --> 1 - N <-- Reviews
     - User --> 1 - N <-- Reviews
+
 -----------------------------------------------------------
-#################### CONTROLLER ###########################
+####################### CONTROLLER ##########################
 -----------------------------------------------------------
-12. Tramite il comando php artisan maker controller. Si creano i seguenti controller nella seguente struttura:
+13. Tramite il comando php artisan make:controller. Si creano i seguenti controller nella seguente struttura:
 app/
 └── Http/
     └── Controllers/
@@ -125,21 +126,58 @@ app/
         └── Admin/
             ├── MovieController.php
             └── ReviewController.php
-13. Per MovieController che si occuperà della visualizzazione dei film per utenti loggati o no vengono associati i seguendi metodi:
+14. Per MovieController che si occuperà della visualizzazione dei film per utenti loggati o no vengono associati i seguenti metodi:
     - index() --> per visualizzare tutta la lista dei film e recensioni altri utenti
-    - show() --> per visualizzare un film specifico e le recensioni associate a quel film 
-13. Per ReviewController che si occuperà della parte di gestione delle recensioni per gli utenti loggati saranno deifiniti i seguenti metodi:
+    - show() --> per visualizzare un film specifico e le recensioni associate a quel film
+15. Per ReviewController che si occuperà della parte di gestione delle recensioni per gli utenti loggati saranno definiti i seguenti metodi:
     - store() --> per salvare nel database i nuovi valori di una nuova recensione
     - update() --> per aggiornare i valori di una specifica recensione lasciata dall'utente
     - destroy() --> per eliminare una recensione lasciata dall'utente
 
-14. Creazione Api con comando php artisan install:api
-15. Creamo il controller API per inviare i dati al frontend react con php artisan make:controller Api/UserController
-16. Impostazione cors per richieste API
-17. Creazione forntend con React:
-    - definizione delle pages con Home, SingleMovies, UserLogin. Collegamento API e richiamo componenti 
+16. Creazione Api con comando php artisan install:api
+17. Creazione del controller API per inviare i dati al frontend react con php artisan make:controller Api/UserController
+18. Impostazione cors per richieste API
+19. Creazione frontend con React:
+    - definizione delle pages con Home, SingleMovies, UserLogin. Collegamento API e richiamo componenti
     - definizione componenti con Header, Footer, Card, ReviewForm, ReviewPost
     - definizione layout
-    - Aggiornamento file App.jsx con il layout 
+    - Aggiornamento file App.jsx con il layout
     - Import bootstrap in main.jsx
-18. Inserimento immagini in storage>app>public>movies, creato link con php artisan storage:link
+20. Inserimento immagini in storage>app>public>movies, creato link con php artisan storage:link
+
+-----------------------------------------------------------
+################### API + REACT: RECENSIONI ##################
+-----------------------------------------------------------
+21. Api/UserController.php: aggiunti i metodi
+    - show($id) -> dettaglio singolo film con director e reviews.user
+    - storeReview(), updateReview(), deleteReview() -> CRUD recensioni lato Api
+22. Aggiunte rotte in routes/api.php: GET movies/{id}, POST movies/{id}/reviews, PUT/DELETE movies/reviews/{id}
+23. Impostazione CORS: creato config/cors.php con allowed_origins letto dalla variabile FRONTEND_URL in .env (http://localhost:5173)
+24. Frontend React, pagina SingleMovie.jsx:
+    - Fix fetch dettaglio film
+    - Allineamento campi al database reale (description, release_date, director.first_name/last_name, media voto calcolata dalle reviews)
+    - Dropdown Bootstrap con data di nascita e biografia del regista
+    - Player trailer incorporato (iframe) da trailer_url
+
+-----------------------------------------------------------
+##################### AUTENTICAZIONE REACT ###################
+-----------------------------------------------------------
+25. Pagine Login.jsx e Registration.jsx (form Bootstrap, collegate a /api/login e /api/register)
+26. AuthContoller.php: metodi register() e login() con hash password in sha256
+27. Stato "loggato" mock salvato in localStorage (senza token reale), usato per:
+    - mostrare/nascondere il form di nuova recensione
+    - mostrare i pulsanti Modifica/Elimina in una recensione solo all'utente che l'ha scritta (review.user_id === user.id)
+
+-----------------------------------------------------------
+################ LARAVEL BREEZE + DASHBOARD ADMIN #############
+-----------------------------------------------------------
+28. Installazione Laravel Breeze (composer require laravel/breeze --dev + php artisan breeze:install) per l'autenticazione lato Blade, in parallelo al sistema fatto a mano lato React
+29. Personalizzazione viste Breeze:
+    - Rimossa welcome.blade.php, rotta / reindirizzata a /login
+    - Nav aggiornata con logo del sito, tolti i link Home/Register (resta solo Login)
+    - Aggiunti link incrociati Login <-> Registrati sotto i rispettivi form
+30. Creato pannello Dashboard (dashboard.blade.php) con 3 tab Bootstrap:
+    - Movies: form per creare film + regista (con combo per scegliere un regista esistente o crearne uno nuovo), elenco film come card con upload poster reale (Storage::disk('public')->putFile), pulsanti Modifica/Elimina
+    - Reviews: tabella recensioni con eliminazione
+    - Users: tabella utenti con eliminazione
+31. Nuovi controller Admin: MovieController (store/edit/update/destroy), ReviewController (destroy), UserController (destroy)
